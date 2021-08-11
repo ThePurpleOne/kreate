@@ -34,7 +34,7 @@ def createHeaderFile(fileName):
 					"/*\n"
 					f"\t* HEADER {fileName.upper()}\n"
 					f"\t* Author : {NAME}\n"
-					f"\t* Date   : {now.strftime('%m/%d/%Y')}\n"
+					f"\t* Date   : {now.strftime('%d/%m/%Y')}\n"
 					"\t! DESCRIPTION\n"
 					"*/\n\n"
 					f"#ifndef _{fileName.upper()}_H_\n"
