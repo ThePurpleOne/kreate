@@ -60,7 +60,7 @@ def createCodeFile(fileName):
 					"/*\n"
 					f"\t* CODE {fileName.upper()}\n"
 					f"\t* Author : {NAME}\n"
-					f"\t* Date   : {now.strftime('%m/%d/%Y')}\n"
+					f"\t* Date   : {now.strftime('%d/%m/%Y')}\n"
 					"\t! DESCRIPTION\n"
 					"*/\n\n"
 				)
