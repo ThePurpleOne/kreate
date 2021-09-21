@@ -1,10 +1,10 @@
 # * PROJ
 # * Author: Jonas S.
 # * Date: 11/07/21
-# !  OBJECTIVE
-# ?  CREATE A BASIC RUNNING PROJECT 
-# ?  CREATE SIMPLE C OR HEADER FILE WITH HEADERS
-# ?	 CREATE MAKEFILE
+# ! OBJECTIVE
+# ? CREATE A BASIC RUNNING PROJECT 
+# ? CREATE SIMPLE C OR HEADER FILE WITH HEADERS
+# ? CREATE MAKEFILE
 # ! NEED COLORAMA AND OS
 
 
@@ -75,9 +75,8 @@ def createCodeFile(fileName):
 
 def createMakefile():
 	content =   (
-					"CXX       := gcc\n"
-					"CXX       := gcc\n"
-					"CXX_FLAGS := -Wall -Wextra\n\n"
+					"CC       := gcc\n"
+					"CC_FLAGS := -Wall -Wextra\n\n"
 
 					"BIN     	:= bin\n"
 					"SRC     	:= src\n"
@@ -95,7 +94,7 @@ def createMakefile():
 
 					"$(BIN)/$(EXECUTABLE): $(SRC)/*.c\n"
 					"	@echo \"🚧 Building...\"\n"
-					"	$(CXX) $(CXX_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)\n\n"
+					"	$(CC) $(CC_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)\n\n"
 
 					"clean:\n"
 					"	@echo \"🧹 Clearing...\"\n"
