@@ -76,41 +76,30 @@ def createCodeFile(fileName):
 def createMakefile():
 	content =   (
 					"CC       := gcc\n"
-					"CFLAGS := -Wall -Wextra -g -fsanitize=address -fsanitize=leak\n"
-					"\n"
-					"BIN     	 := bin\n"
-					"SRC     	 := src\n"
-					"INCLUDE 	 := include\n"
-					"LIBRARIES    := -lm\n"
-					"EXECUTABLE1  := main\n"
-					"\n"
-					"# ADD ALL THE SOURCES FOR EXECUTABLE1\n"
-					"SOURCES1 += $(SRC)/jrandom\n"
-					"\n"
-					".PHONY: all run clean # Specify these are not files but internal terms\n"
-					"\n"
-					"all: $(BIN)/$(EXECUTABLE1)\n"
-					"\n"
+					"CC_FLAGS := -Wall -Wextra -g -fsanitize=address\n\n"
+
+					"BIN     	:= bin\n"
+					"SRC     	:= src\n"
+					"INCLUDE 	:= include\n"
+					"LIB     	:= lib\n"
+					"LIBRARIES   := \n"
+					"EXECUTABLE  := main\n\n"
+					
+					"all: $(BIN)/$(EXECUTABLE)\n\n"
+
 					"run: clean all\n"
 					"	clear\n"
-					"	@echo "########## EXECUTE FIRST PROGRAM ##########"\n"
-					"	./$(BIN)/$(EXECUTABLE1)\n"
-					"\n"
-					"# # $^ -> dep\n"
-					"# # $@ -> target\n"
-					"# # $< -> premiere dep\n"
-					"# # Compiles directly the c files\n"
-					"# # Not optimal but succint and simple\n"
-					"\n"
-					"# COMPILE FIRST EXECUTABLE\n"
-					"$(BIN)/$(EXECUTABLE1): $(SRC)/$(EXECUTABLE1).c $(SOURCES)\n"
-					"	@echo "########## COMPILING FIRST EXECUTABLE ##########"\n"
-					"	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)\n"
-					"\n"
+					"	@echo \"🚀 Executing...\"\n"
+					"	./$(BIN)/$(EXECUTABLE)\n\n"
+
+					"$(BIN)/$(EXECUTABLE): $(SRC)/*.c\n"
+					"	@echo \"🚧 Building...\"\n"
+					"	$(CC) $(CC_FLAGS) -I $(INCLUDE) -L $(LIB) $^ -o $@ $(LIBRARIES)\n\n"
+
 					"clean:\n"
-					"	@echo "########## CLEANING ##########"\n"
-					"	-rm $(BIN)/*\n"
-					"\n"
+					"	@echo \"🧹 Clearing...\"\n"
+					"	-rm $(BIN)/*\n\n"
+
 				)
 	createFile("Makefile", content)
 
