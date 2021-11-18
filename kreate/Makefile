@@ -16,7 +16,8 @@ all: $(BIN)/$(EXECUTABLE1)
 
 run: clean all
 	clear
-	@echo 	./$(BIN)/$(EXECUTABLE1)
+	@echo "########## EXECUTE FIRST PROGRAM ##########"
+	./$(BIN)/$(EXECUTABLE1)
 
 # # $^ -> dep
 # # $@ -> target
@@ -26,8 +27,9 @@ run: clean all
 
 # COMPILE FIRST EXECUTABLE
 $(BIN)/$(EXECUTABLE1): $(SRC)/$(EXECUTABLE1).c $(SOURCES)
-	@echo 	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
+	@echo "########## COMPILING FIRST EXECUTABLE ##########"
+	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 clean:
-	@echo 	-rm $(BIN)/*
+	@echo "########## CLEANING ##########"\n	-rm $(BIN)/*
 
