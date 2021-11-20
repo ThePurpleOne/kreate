@@ -108,7 +108,7 @@ def createMakefile():
 					"	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)\n"
 					"\n"
 					"clean:\n"
-					"	@echo \"########## CLEANING ##########\"\\n"
+					"	@echo \"########## CLEANING ##########\"\n"
 					"	-rm $(BIN)/*\n"
 					"\n"
 				)
