@@ -7,9 +7,6 @@
 # ? CREATE MAKEFILE
 # ! NEED COLORAMA AND OS
 
-
-
-
 import colorama
 from colorama import Fore, Back
 
@@ -84,26 +81,28 @@ def createMakefile():
 					"LIBRARIES    := -lm\n"
 					"EXECUTABLE  := main\n"
 					"\n"
-					"# ADD ALL THE SOURCES FOR EXECUTABLE1\n"
 					"SOURCES += $(SRC)/$(EXECUTABLE).c\n"
 					"\n"
-					".PHONY: all run clean # Specify these are not files but internal terms\n"
+					".PHONY: all run clean prebuild\n"
 					"\n"
-					"all: $(BIN)/$(EXECUTABLE)\n"
+					"all: prebuild $(BIN)/$(EXECUTABLE)\n"
 					"\n"
 					"run: clean all\n"
 					"	clear\n"
 					"	@echo \"########## EXECUTE FIRST PROGRAM ##########\"\n"
 					"	./$(BIN)/$(EXECUTABLE)\n"
 					"\n"
-					"# COMPILE FIRST EXECUTABLE\n"
-					"$(BIN)/$(EXECUTABLE): $(SOURCES)\n"
-					"	@echo \"########## COMPILING FIRST EXECUTABLE ##########\"\n"
-					"	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)\n"
+					"prebuild:\n"
+					"	@mkdir -p $(BIN)\n"
 					"\n"
 					"clean:\n"
 					"	@echo \"########## CLEANING ##########\"\n"
 					"	-rm $(BIN)/*\n"
+					"\n"
+					"# COMPILE FIRST EXECUTABLE\n"
+					"$(BIN)/$(EXECUTABLE): $(SOURCES)\n"
+					"	@echo \"########## COMPILING FIRST EXECUTABLE ##########\"\n"
+					"	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)\n"
 					"\n"
 				)
 	createFile("Makefile", content)
@@ -114,8 +113,6 @@ def createDirStructure():
 
 	if not os.path.exists('bin'):
 		mkdir('bin')
-	if not os.path.exists('build'):
-		mkdir('build')
 	if not os.path.exists('include'):
 		mkdir('include')
 	if not os.path.exists('src'):
