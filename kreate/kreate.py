@@ -8,139 +8,113 @@
 # ! NEED COLORAMA AND OS
 
 import colorama
+import os
+import re
+
 from colorama import Fore, Back
+from datetime import datetime
+from shutil import copyfile
 
 
-#HARD CODED STUFF
+# GLOBAL
 NAME = "Jonas S."
-colorama.init()
+DATE = datetime.now().strftime('%d/%m/%Y')
+BSP = ".kreate" # BASE SOURCE PATH
+CWD_PATH = os.path.abspath(".")
+BASE_PLACEHOLDER = 	{"DATE":f"{DATE}",
+					"NAME":f"{NAME}",}
 
-# ! FILE CREATION
-def createFile(fileName, content):
+def gprint(text):
+	print(f"{Fore.GREEN}{text}{Fore.RESET}")
+
+def read_file(filename):
+	content = ""
+	with open(filename, 'r') as f:
+		content = f.read()
+	return content
+
+def create_file(fileName, content):
 	with open(f"{fileName}", 'w', encoding = 'utf-8') as f:
 		f.write(content)
 
-def createHeaderFile(fileName):
-	from datetime import datetime
-	import os
+def replace_placeholders(file_content, placeholders_dict):
+	return re.sub(r"@@(\w+?)@@", lambda match: placeholders_dict[match.group(1)], file_content)
+
+def create_dir_structure(project_name):
 	from os import mkdir
+	dirs = ["bin", "include", "src"]
 
-	now = datetime.now() # current date and time
+	# BASE PROJECT DIRECTORY
+	if not os.path.exists(f'{project_name}'):
+		mkdir(f'{project_name}')
 
-	content =   (
-					"/*\n"
-					f"\t* HEADER {fileName.upper()}\n"
-					f"\t* Author : {NAME}\n"
-					f"\t* Date   : {now.strftime('%d/%m/%Y')}\n"
-					"\t! DESCRIPTION\n"
-					"*/\n\n"
-					f"#ifndef _{fileName.upper()}_H_\n"
-					f"#define _{fileName.upper()}_H_\n\n"
-					"// DEFINES\n\n"
-					"// PROTOTYPE FUNCTIONS\n\n"
-					"#endif"
-				)
+	# ACTUAL STRUCTURE OF PROJECT
+	for d in dirs:
+		if not os.path.exists(f'{project_name}/{d}'):
+			mkdir(f'{project_name}/{d}')
 
-	if not os.path.exists('include'):
-		mkdir('include')
-	createFile(f"include/{fileName}.h", content)
+def create_makefile(path=CWD_PATH):
+	copyfile(f"{BSP}/BASE_MAKEFILE", f"{path}/Makefile")
 
-def createCodeFile(fileName):
-	from datetime import datetime
-	from datetime import datetime
-	import os
-	from os import mkdir
+def create_main(path=f"{CWD_PATH}/src"):
+	content = read_file(f"{BSP}/BASE_MAIN.c")
+	content = replace_placeholders(content, BASE_PLACEHOLDER)
+	create_file(f"{path}/main.c", content)
+
+def create_readme(project_name, path=f"{CWD_PATH}"):
+	content = read_file(f"{BSP}/BASE_README.md")
+	pholder = BASE_PLACEHOLDER.copy()
+	pholder["PROJECT"] = project_name
+	content = replace_placeholders(content, pholder)
+	create_file(f"{path}/readme.md", content)
+
+def create_gitignore(path=f"{CWD_PATH}"):
+	copyfile(f"{BSP}/BASE_GITIGNORE", f"{path}/.gitignore")
+
+def create_clang(path=f"{CWD_PATH}"):
+	copyfile(f"{BSP}/BASE_CLANG", f"{path}/.clang-format")
+
+def create_module_code(module_name : str, path=f"{CWD_PATH}"):
+	content = read_file(f"{BSP}/BASE_CODE.c")
+	pholder = BASE_PLACEHOLDER.copy()
+	pholder["MOD_NAME"] = module_name
+	pholder["UPPER_MOD_NAME"] = module_name.upper()
+	content = replace_placeholders(content, pholder)
+	create_file(f"{path}/{module_name}.c", content)
+
+def create_module_header(module_name : str, path=f"{CWD_PATH}"):
+	content = read_file(f"{BSP}/BASE_HEADER.h")
+	pholder = BASE_PLACEHOLDER.copy()
+	pholder["MOD_NAME"] = module_name
+	pholder["UPPER_MOD_NAME"] = module_name.upper()
+	content = replace_placeholders(content, pholder)
+	create_file(f"{path}/{module_name}.h", content)
+
+def add_module(module_name):
+	create_module_code(module_name, path="src")
+	create_module_header(module_name)
+
+def create_complete_project(project_name):
+	create_dir_structure(project_name)
+	gprint("+ Basic Structure added")
 	
-	now = datetime.now() # current date and time
-
-	content =   (
-					"/*\n"
-					f"\t* CODE {fileName.upper()}\n"
-					f"\t* Author : {NAME}\n"
-					f"\t* Date   : {now.strftime('%d/%m/%Y')}\n"
-					"\t! DESCRIPTION\n"
-					"*/\n\n"
-				)
-
-	# add basic printf if main
-	if fileName == "main":
-		content += "#include <stdio.h>\n\nint main()\n{\n\tprintf(\"ISSOU\\n\");\n\treturn 0;\n}"
+	create_makefile(f"{project_name}/.")
+	gprint("+ Makefile added")
 	
-	if not os.path.exists('src'):
-		mkdir('src')
-	createFile(f"src/{fileName}.c", content)
+	create_main(f"{project_name}/src")
+	gprint("+ main.c added")
 
-def createMakefile():
-	content =   (
-					"CC       := gcc\n"
-					"CFLAGS := -Wall -Wextra -g -fsanitize=address -fsanitize=leak\n"
-					"\n"
-					"BIN     	 := bin\n"
-					"SRC     	 := src\n"
-					"INCLUDE 	 := include\n"
-					"LIBRARIES    := -lm\n"
-					"EXECUTABLE  := main\n"
-					"\n"
-					"SOURCES += $(SRC)/$(EXECUTABLE).c\n"
-					"\n"
-					".PHONY: all run clean prebuild\n"
-					"\n"
-					"all: prebuild $(BIN)/$(EXECUTABLE)\n"
-					"\n"
-					"run: clean all\n"
-					"	clear\n"
-					"	@echo \"########## EXECUTE FIRST PROGRAM ##########\"\n"
-					"	./$(BIN)/$(EXECUTABLE)\n"
-					"\n"
-					"prebuild:\n"
-					"	@mkdir -p $(BIN)\n"
-					"\n"
-					"clean:\n"
-					"	@echo \"########## CLEANING ##########\"\n"
-					"	-rm $(BIN)/*\n"
-					"\n"
-					"# COMPILE FIRST EXECUTABLE\n"
-					"$(BIN)/$(EXECUTABLE): $(SOURCES)\n"
-					"	@echo \"########## COMPILING FIRST EXECUTABLE ##########\"\n"
-					"	$(CC) $(CFLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)\n"
-					"\n"
-				)
-	createFile("Makefile", content)
+	create_readme(f"{project_name}", f"{project_name}/.")
+	gprint("+ readme.md added")
 
-def createDirStructure():
-	import os
-	from os import mkdir
+	create_gitignore(f"{project_name}/.")
+	gprint("+ .gitignore added")
 
-	if not os.path.exists('bin'):
-		mkdir('bin')
-	if not os.path.exists('include'):
-		mkdir('include')
-	if not os.path.exists('src'):
-		mkdir('src')
-
-# ! MENU CREATION
-def createCompleteProject():
-	# Base structure (SRC, BUILD, INCLUDE, BIN)
-	createDirStructure()
-	print(f"{Fore.GREEN}+ BASIC STRUCTURE CREATED{Fore.RESET}")
-	# Makefile
-	createMakefile()
-	print(f"{Fore.GREEN}+ MAKEFILE CREATED{Fore.RESET}")
-	# Main 
-	createCodeFile("main")
-	print(f"{Fore.GREEN}+ MAIN.C FILE CREATE{Fore.RESET}")
-
-def createCodeHeader(name):
-	# Code
-	createCodeFile(name)
-	print(f"{Fore.GREEN}+ CODE FILE CREATED{Fore.RESET}")
-	# Header
-	createHeaderFile(name)
-	print(f"{Fore.GREEN}+ HEADER FILE CREATED{Fore.RESET}")
+	create_clang( f"{project_name}/.")
+	gprint("+ .clang-format added")
 
 
-
-# ! MENU
+## ! MENU
 def menu():
 	choice = input(
 	"1 - COMPLETE PROJECT                 \n"
@@ -154,34 +128,48 @@ def menu():
 
 	# PROJECT
 	if choice == '1': 
-		print(f"{Fore.BLUE}FULL PROJECT IS BEING CREATED.{Fore.RESET}")
+		print(f"{Fore.BLUE}FULL PROJECT IS BEING CREATED.")
 		createCompleteProject()
 
-	# CODE + HEADER
-	elif choice == '2':
-		print(f"{Fore.BLUE}A CODE AND HEADER FILE ARE BEING CREATED.{Fore.RESET}")
-		createCodeHeader(input("WHAT FILE NAME DO YOU WANT : "))		
+	## CODE + HEADER
+	#elif choice == '2':
+	#	print(f"{Fore.BLUE}A CODE AND HEADER FILE ARE BEING CREATED.")
+	#	createCodeHeader(input("WHAT FILE NAME DO YOU WANT : "))		
 	
-	# CODE 
-	elif choice == '3':
-		print(f"{Fore.BLUE}A CODE FILE IS BEING CREATED.{Fore.RESET}")
-		createCodeFile(input("WHAT FILE NAME DO YOU WANT : "))
-		print(f"{Fore.GREEN}+ CODE FILE CREATED{Fore.RESET}")
+	## CODE 
+	#elif choice == '3':
+	#	print(f"{Fore.BLUE}A CODE FILE IS BEING CREATED.")
+	#	createCodeFile(input("WHAT FILE NAME DO YOU WANT : "))
+	#	print("+ CODE FILE CREATED")
 
-	# HEADER
-	elif choice == '4':
-		print(f"{Fore.BLUE}A HEADER FILE IS BEING CREATED.{Fore.RESET}")
-		createHeaderFile(input("WHAT FILE NAME DO YOU WANT : "))	
-		print(f"{Fore.GREEN}+ CODE FILE CREATED{Fore.RESET}")
+	## HEADER
+	#elif choice == '4':
+	#	print(f"{Fore.BLUE}A HEADER FILE IS BEING CREATED.")
+	#	createHeaderFile(input("WHAT FILE NAME DO YOU WANT : "))	
+	#	print("+ CODE FILE CREATED")
 
-	# MAKEFILE
-	elif choice == '5':
-		print(f"{Fore.BLUE}A HEADER FILE IS BEING CREATED.")
-		createMakefile()		
-		print(f"{Fore.GREEN}+  MAKEFILE CREATED{Fore.RESET}")
+	## MAKEFILE
+	#elif choice == '5':
+	#	print(f"{Fore.BLUE}A HEADER FILE IS BEING CREATED.")
+	#	createMakefile()		
+	#	print("+  MAKEFILE CREATED")
 
 if __name__ == "__main__":
-	menu()
 
+	#create_makefile()
+	#create_dir_structure("TESTING")
+	create_complete_project("proj")
 
+	##menu()
 
+	#colorama.init()
+
+	#NAME = "Jonas S."
+	#DATE = datetime.now().strftime('%d/%m/%Y')
+	#PROJECT = input("Project name")
+
+	#placeholders = {"DATE":f"{DATE}",
+	#				"NAME":f"{NAME}",
+	#				"FILENAME":"replaced3"}
+	#test = replace_placeholders(test, placeholders)
+	#print(test)
