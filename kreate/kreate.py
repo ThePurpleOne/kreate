@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # * PROJ
 # * Author: Jonas S.
 # * Date: 11/07/21
@@ -21,7 +23,7 @@ from shutil import copyfile
 # GLOBAL
 NAME = "Jonas S."
 DATE = datetime.now().strftime('%d/%m/%Y')
-BSP = ".kreate" # BASE SOURCE PATH
+BSP = f"{os.path.expanduser('~')}/.kreate" # BASE SOURCE PATH
 CWD_PATH = os.path.abspath(".")
 BASE_PLACEHOLDER = 	{"DATE":f"{DATE}",
 					"NAME":f"{NAME}",}
