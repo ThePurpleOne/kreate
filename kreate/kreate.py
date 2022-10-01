@@ -10,9 +10,6 @@
 # ? CREATE MAKEFILE
 # ! NEED COLORAMA AND OS
 
-
-
-
 import colorama
 import os
 import re
@@ -66,7 +63,7 @@ def create_main(path=f"{CWD_PATH}/src"):
 	content = replace_placeholders(content, BASE_PLACEHOLDER)
 	create_file(f"{path}/main.c", content)
 
-def create_readme(project_name, path=f"{CWD_PATH}"):
+def create_readme(project_name="PROJECT NAME", path=f"{CWD_PATH}"):
 	content = read_file(f"{BSP}/BASE_README.md")
 	pholder = BASE_PLACEHOLDER.copy()
 	pholder["PROJECT"] = project_name
@@ -129,60 +126,81 @@ def create_complete_project(project_name):
 ## ! MENU
 def menu():
 	choice = input(
-	"1 - COMPLETE PROJECT                 \n"
-	"2 - CODE + HEADER                    \n"
-	"3 - CODE ONLY                        \n"
-	"4 - HEADER ONLY                      \n"
-	"5 - MAKEFILE ONLY                    \n"
+	"1 - Complete project                 \n"
+	"2 - Module (code + header)                    \n"
+	"3 - Code only                        \n"
+	"4 - Header only                      \n"
+	"5 - Metafiles (Makefile, readme, clang, gitignore)                    \n"
+	"6 - Makefile                    \n"
+	"7 - clang                    \n"
+	"8 - readme                    \n"
+	"9 - gitignore                    \n"
 	"\n"
 
 	)
 
 	# PROJECT
 	if choice == '1': 
-		print(f"{Fore.BLUE}FULL PROJECT IS BEING CREATED.")
-		createCompleteProject()
+		project_name = input("Project name: ")
+		print(f"{Fore.BLUE}Full project is being created.")
+		create_complete_project(project_name)
+		os.system(f'tree -a {project_name}/')
 
-	## CODE + HEADER
-	#elif choice == '2':
-	#	print(f"{Fore.BLUE}A CODE AND HEADER FILE ARE BEING CREATED.")
-	#	createCodeHeader(input("WHAT FILE NAME DO YOU WANT : "))		
+	# CODE + HEADER (module)
+	elif choice == '2':
+		add_module(input("Module name: "))
+		gprint("+ Module created")
+		os.system(f'tree -a')
+
+	# CODE 
+	elif choice == '3':
+		if os.path.exists(f'{CWD_PATH}/src'):
+			create_module_code(input("Code name: "), path=f"{CWD_PATH}/src/.")
+		else:
+			print("Could not find src folder")
+		os.system(f'tree -a')
+
+	# HEADER
+	elif choice == '4':
+		if os.path.exists(f'{CWD_PATH}/include'):
+			create_module_code(input("Header name: "), path=f"{CWD_PATH}/include/.")
+		else:
+			print("Could not find include folder")
+		gprint("+ Header created")
+		os.system(f'tree -a')
+
+	# META FILES
+	elif choice == '5':
+		create_makefile()		
+		create_clang()		
+		create_readme()		
+		create_gitignore()
+		gprint("+ Makefile")
+		gprint("+ .clang-format")
+		gprint("+ readme.md")
+		gprint("+ .gitignore")
+		os.system(f'tree -a')
+
+	# MAKEFILE
+	elif choice == '6':
+		create_makefile()		
+		gprint("+ Makefile")
+
+	# CLANG
+	elif choice == '7':
+		create_clang()		
+		gprint("+ .clang-format")
 	
-	## CODE 
-	#elif choice == '3':
-	#	print(f"{Fore.BLUE}A CODE FILE IS BEING CREATED.")
-	#	createCodeFile(input("WHAT FILE NAME DO YOU WANT : "))
-	#	print("+ CODE FILE CREATED")
-
-	## HEADER
-	#elif choice == '4':
-	#	print(f"{Fore.BLUE}A HEADER FILE IS BEING CREATED.")
-	#	createHeaderFile(input("WHAT FILE NAME DO YOU WANT : "))	
-	#	print("+ CODE FILE CREATED")
-
-	## MAKEFILE
-	#elif choice == '5':
-	#	print(f"{Fore.BLUE}A HEADER FILE IS BEING CREATED.")
-	#	createMakefile()		
-	#	print("+  MAKEFILE CREATED")
+	# README
+	elif choice == '8':
+		create_readme()		
+		gprint("+ readme.md")
+	
+	# GITIGNORE
+	elif choice == '9':
+		create_gitignore()		
+		gprint("+ .gitignore")
 
 if __name__ == "__main__":
-
-	#create_makefile()
-	#create_dir_structure("TESTING")
-	#create_complete_project("proj")
-	add_module("module")
-
-	##menu()
-
-	#colorama.init()
-
-	#NAME = "Jonas S."
-	#DATE = datetime.now().strftime('%d/%m/%Y')
-	#PROJECT = input("Project name")
-
-	#placeholders = {"DATE":f"{DATE}",
-	#				"NAME":f"{NAME}",
-	#				"FILENAME":"replaced3"}
-	#test = replace_placeholders(test, placeholders)
-	#print(test)
+	colorama.init()
+	menu()
