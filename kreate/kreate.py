@@ -1,11 +1,17 @@
 # * PROJ
 # * Author: Jonas S.
 # * Date: 11/07/21
+
+# ! LOT OF HARDCODED STUFF FOR PERSONNAL USE
+# ! LOT OF USELESS REPETITIVE CODE
 # ! OBJECTIVE
 # ? CREATE A BASIC RUNNING PROJECT 
 # ? CREATE SIMPLE C OR HEADER FILE WITH HEADERS
 # ? CREATE MAKEFILE
 # ! NEED COLORAMA AND OS
+
+
+
 
 import colorama
 import os
@@ -14,7 +20,6 @@ import re
 from colorama import Fore, Back
 from datetime import datetime
 from shutil import copyfile
-
 
 # GLOBAL
 NAME = "Jonas S."
@@ -91,8 +96,15 @@ def create_module_header(module_name : str, path=f"{CWD_PATH}"):
 	create_file(f"{path}/{module_name}.h", content)
 
 def add_module(module_name):
-	create_module_code(module_name, path="src")
-	create_module_header(module_name)
+	if os.path.exists(f'{CWD_PATH}/src'):
+		create_module_code(module_name, path=f"{CWD_PATH}/src/.")
+	else:
+		print("Could not find src folder")
+
+	if os.path.exists(f'{CWD_PATH}/include'):
+		create_module_header(module_name, path=f"{CWD_PATH}/include/.")
+	else:
+		print("Could not find include folder")
 
 def create_complete_project(project_name):
 	create_dir_structure(project_name)
@@ -158,7 +170,8 @@ if __name__ == "__main__":
 
 	#create_makefile()
 	#create_dir_structure("TESTING")
-	create_complete_project("proj")
+	#create_complete_project("proj")
+	add_module("module")
 
 	##menu()
 
