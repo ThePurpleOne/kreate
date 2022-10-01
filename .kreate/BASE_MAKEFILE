@@ -4,7 +4,7 @@ LIB     := -lm
 
 DIR_BIN := bin
 DIR_SRC := src
-DIR_INC := src
+DIR_INC := include
 DIR_LIB := lib
 CFLAGS  += -I$(DIR_INC) -L$(DIR_LIB)
 
